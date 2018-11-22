@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+  <title>Plant Flowers in Your Garden</title>
+</head>
+
+<body>
+  <h1>Plant Flowers in Your Garden</h1>
+  <table border=2>
+      <tr>
+        <td>重要度</td>
+        <td>タスク名</td>
+        <td>納期</td>
+        <td>コメント</td>
+      </tr>
+    {% for task in tasks %}
+      <tr>
+        <td>{{ task.taskImportance }}</td>
+        <td>{{ task.taskName }}</td>
+        <td>{{ task.dueDate }}</td>
+        <td>{{ task.comment }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</body>
