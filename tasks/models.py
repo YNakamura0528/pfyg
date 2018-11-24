@@ -11,7 +11,7 @@ class Task(models.Model):
                                             ])
     dueDate = models.DateField(blank = True, null = True)
     doneDate = models.DateField(blank = True, null = True)
-    comment = models.TextField(max_length = 1024, blank = True, null = True)
+    comment = models.CharField(max_length = 1024, blank = True, null = True)
     createDatetime = models.DateTimeField(auto_now_add=True)
     updateDatetime = models.DateTimeField(auto_now = True)
 
