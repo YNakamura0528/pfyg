@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import validators
+from datetime import date
 # Create your models here.
 class Task(models.Model):
     taskName = models.CharField(max_length = 150, blank = False)
@@ -14,6 +15,14 @@ class Task(models.Model):
     comment = models.CharField(max_length = 1024, blank = True, null = True)
     createDatetime = models.DateTimeField(auto_now_add=True)
     updateDatetime = models.DateTimeField(auto_now = True)
+    completedDatetime = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
         return self.taskName
+
+    @classmethod
+    def getTodaysCompletedTasks(cls):
+        completedTasks = cls.objects.filter(\
+            completedDatetime__date = date.today(),
+            )
+        return completedTasks

@@ -5,15 +5,20 @@
 
 <body>
   <h1>Plant Flowers in Your Garden</h1>
+
+  <h2>タスク一覧</h2>
   <table border=2>
       <tr>
+        <td>完了</td>
         <td>重要度</td>
         <td>タスク名</td>
         <td>納期</td>
         <td>コメント</td>
         <td>編集</td>
+        <td>削除</td>
       </tr>
       <tr>
+        <td></td>
         <form action="{% url "tasks:new" %}" method="POST" >
           {% csrf_token %}
         <td>{{ newform.taskImportance }}</td>
@@ -21,25 +26,20 @@
         <td>{{ newform.dueDate }}</td>
         <td>{{ newform.comment }}</td>
         <td><button type="submit">新規登録</button></td>
+        <td></td>
       </form>
       </tr>
 
-      <!-- {% for task in tasks %}
-        <tr>
-          <form action="{% url 'tasks:edit' task.pk %}" method="POST">
-            {% csrf_token %}
-            <td><input type="textField" name="taskImportance" value="{{ task.taskImportance }}"></td>
-            <td>{{ task.taskName }}</td>
-            <td>{{ task.dueDate }}</td>
-            <td>{{ task.comment }}</td>
-            <td><button type="submit">編集</button></td>
-          </form>
-        </tr>
-      {% endfor %} -->
 
       {% for f in forms %}
       <tr>
-        <form action="{% url 'tasks:edit2' f.id %}" method="POST">
+        <td>
+          <form action="{% url 'tasks:complete' f.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">完了</button>
+          </form>
+        </td>
+        <form action="{% url 'tasks:edit' f.id %}" method="POST">
           {% csrf_token %}
           <td>{{ f.form.taskImportance }}</td>
           <td>{{ f.form.taskName }}</td>
@@ -47,10 +47,35 @@
           <td>{{ f.form.comment }}</td>
           <td><button type="submit">編集</button></td>
         </form>
+        <td>
+          <form action="{% url 'tasks:delete' f.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" onclick='return confirm("本当に削除しますか？");'>削除</button>
+          </form>
+        </td>
       </tr>
       {% endfor %}
-
   </table>
 
+  <h2>きょう完了したタスク</h2>
+  <table border=1>
+    <tr>
+      <td></td>
+      <td>タスク名</td>
+      <td>完了時間</td>
+      <td>納期</td>
+    </tr>
+    {% for task in completedTasks %}
+    <tr>
+      <td><form action="{% url 'tasks:reset' task.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">未完了にする</button>
+      </form></td>
+      <td>{{ task.taskName }}</td>
+      <td>{{ task.completedDatetime }}</td>
+      <td>{{ task.dueDate }} </td>
+    </tr>
+    {% endfor %}
+  </table>
 
 </body>

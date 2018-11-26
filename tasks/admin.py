@@ -3,7 +3,7 @@ from .models import Task
 # Register your models here.
 
 class TasksAdmin(admin.ModelAdmin):
-    list_display = ("id", "taskName", "dueDate", "createDatetime", "updateDatetime" )
+    list_display = ("id", "taskName", "dueDate", "createDatetime", "updateDatetime", "completedDatetime" )
     list_display_links = ("id", "taskName")
 
 admin.site.register(Task, TasksAdmin)
