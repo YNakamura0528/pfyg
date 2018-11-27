@@ -10,9 +10,9 @@
   <table border=2>
       <tr>
         <td>完了</td>
-        <td>重要度</td>
+        <td><a href="{% url "tasks:index" "-taskImportance" %}">重要度</a></td>
         <td>タスク名</td>
-        <td>納期</td>
+        <td><a href ="{% url "tasks:index" %}">納期</a></td>
         <td>コメント</td>
         <td>編集</td>
         <td>削除</td>

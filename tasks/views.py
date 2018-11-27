@@ -6,8 +6,13 @@ from .forms import TaskForm
 
 # Create your views here.
 
-def index(request):
+def index(request, option = None):
     tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate")
+    try:
+        if option:
+            tasks = tasks.order_by(option)
+    except Exception as e:
+        pass
     completedTasks = Task.getTodaysCompletedTasks()
     newform = TaskForm()
     forms = []

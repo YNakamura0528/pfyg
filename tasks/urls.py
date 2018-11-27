@@ -10,4 +10,5 @@ urlpatterns = [
     path("delete/<int:task_id>", views.delete, name = "delete"),
     path("complete/<int:task_id>", views.complete, name = "complete"),
     path("reset/<int:task_id>", views.reset, name = "reset"),
+    path("<str:option>", views.index, name = "index"),
 ]
