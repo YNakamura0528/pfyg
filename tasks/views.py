@@ -8,18 +8,16 @@ from .forms import TaskForm
 
 def index(request, option = None):
     tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate")
-    try:
-        if option:
-            tasks = tasks.order_by(option)
-    except Exception as e:
-        pass
+    if option:
+        tasks = tasks.order_by(option)
     completedTasks = Task.getTodaysCompletedTasks()
     newform = TaskForm()
     forms = []
     for task in tasks:
         forms.append({"id": task.id, "form":TaskForm(instance = task)})
 
-    return render(request, "tasks/index.html", {"newform": newform, "forms": forms, "completedTasks": completedTasks})
+    taskGraphBase64 = Task.getTaskGraph()
+    return render(request, "tasks/index.html", {"newform": newform, "forms": forms, "completedTasks": completedTasks, "taskGraphBase64": taskGraphBase64})
 
 def new(request):
     form = TaskForm(request.POST)

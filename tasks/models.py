@@ -1,6 +1,12 @@
+import base64
+from datetime import date
+from io import BytesIO
+
 from django.db import models
 from django.core import validators
-from datetime import date
+from PIL import Image, ImageDraw, ImageFont
+
+
 # Create your models here.
 class Task(models.Model):
     taskName = models.CharField(max_length = 150, blank = False)
@@ -26,3 +32,32 @@ class Task(models.Model):
             completedDatetime__date = date.today(),
             )
         return completedTasks
+
+    @classmethod
+    def getTaskGraph(cls):
+        width = 500
+        height = 330
+        graph = Image.new("RGB", (width, height), (100,0,0))
+        draw = ImageDraw.Draw(graph)
+        font_size = 18 #文字の大きさの指定
+        font = ImageFont.truetype('tasks/static/ume-hgo4.ttf', font_size)
+
+        tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate").order_by("-taskImportance")
+        for i, task in enumerate(tasks):
+            if task.dueDate is None:
+                continue
+            yoko = width - (task.dueDate - date.today()).days * font_size * 8
+            if yoko >= width - len(task.taskName) * font_size:
+                yoko = width - len(task.taskName) * font_size
+            if yoko < 10:
+                yoko = 10
+
+            draw.text((yoko-5 , i * 30 + 15), task.taskName, (255,255,255), font)
+
+            if i >= 10:
+                break
+
+        buffer = BytesIO()
+        graph.save(buffer, format="PNG")
+        base64Img = base64.b64encode(buffer.getvalue()).decode().replace("'", "")
+        return base64Img
