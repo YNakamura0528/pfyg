@@ -35,18 +35,18 @@ class Task(models.Model):
 
     @classmethod
     def getTaskGraph(cls):
-        width = 500
-        height = 330
+        width = 1200
+        height = 400
         graph = Image.new("RGB", (width, height), (100,0,0))
         draw = ImageDraw.Draw(graph)
-        font_size = 18 #文字の大きさの指定
+        font_size = 24 #文字の大きさの指定
         font = ImageFont.truetype('tasks/static/ume-hgo4.ttf', font_size)
 
         tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate").order_by("-taskImportance")
         for i, task in enumerate(tasks):
             if task.dueDate is None:
                 continue
-            yoko = width - (task.dueDate - date.today()).days * font_size * 8
+            yoko = width - (task.dueDate - date.today()).days * font_size * 8 - 200
             if yoko >= width - len(task.taskName) * font_size:
                 yoko = width - len(task.taskName) * font_size
             if yoko < 10:
