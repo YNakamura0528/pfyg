@@ -11,25 +11,32 @@ from django.contrib.auth.models import User
 
 @login_required
 def index(request, option = None):
-    tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate")
+
     user_id = request.user.id
     user = User.objects.get(id=user_id)
+
+    # tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate")
+    tasks = user.tasks.filter(completedDatetime__isnull=True).order_by("dueDate")
     if option:
         tasks = tasks.order_by(option)
+
     completedTasks = Task.getTodaysCompletedTasks()
     newform = TaskForm()
     forms = []
     for task in tasks:
         forms.append({"id": task.id, "form":TaskForm(instance = task)})
 
-    taskGraphBase64 = Task.getTaskGraph()
+    taskGraphBase64 = Task.getTaskGraph(tasks)
     return render(request, "tasks/index.html", {"newform": newform, "forms": forms, "completedTasks": completedTasks, "taskGraphBase64": taskGraphBase64, "user": user})
 
 @login_required
 def new(request):
     form = TaskForm(request.POST)
+    # form["taskOwnerId"] = request.user.id
     if form.is_valid():
-        form.save()
+        taskForm = form.save(commit = False)
+        taskForm.taskOwnerId = request.user
+        taskForm.save()
 
     return redirect("tasks:index")
 
@@ -39,14 +46,16 @@ def edit(request, task_id):
     if request.method == "POST":
         form = TaskForm(request.POST, instance = task)
         if form.is_valid():
-            form.save()
+            taskForm = form.save(commit = False)
+            taskForm.taskOwnerId = request.user
+            taskForm.save()
     return redirect("tasks:index")
 
 
 @login_required
 def delete(request, task_id):
     task = get_object_or_404(Task, id=task_id)
-    if request.method == "POST":
+    if request.method == "POST" and task.taskOwnerId == request.user:
         task.delete()
     return redirect("tasks:index")
 
@@ -54,7 +63,7 @@ def delete(request, task_id):
 @login_required
 def complete(request, task_id):
     task = get_object_or_404(Task, id=task_id)
-    if request.method == "POST":
+    if request.method == "POST" and task.taskOwnerId == request.user:
         task.completedDatetime = timezone.datetime.now()
         task.save()
 

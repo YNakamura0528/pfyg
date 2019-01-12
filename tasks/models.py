@@ -2,6 +2,7 @@ import base64
 from datetime import date
 from io import BytesIO
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.core import validators
 from PIL import Image, ImageDraw, ImageFont
@@ -22,6 +23,7 @@ class Task(models.Model):
     createDatetime = models.DateTimeField(auto_now_add=True)
     updateDatetime = models.DateTimeField(auto_now = True)
     completedDatetime = models.DateTimeField(blank = True, null = True)
+    taskOwnerId = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "tasks")
 
     def __str__(self):
         return self.taskName
@@ -34,7 +36,7 @@ class Task(models.Model):
         return completedTasks
 
     @classmethod
-    def getTaskGraph(cls):
+    def getTaskGraph(cls, tasks):
         width = 1200
         height = 400
         graph = Image.new("RGB", (width, height), (100,0,0))
@@ -42,7 +44,8 @@ class Task(models.Model):
         font_size = 24 #文字の大きさの指定
         font = ImageFont.truetype('tasks/static/ume-hgo4.ttf', font_size)
 
-        tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate").order_by("-taskImportance")
+        # tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate").order_by("-taskImportance")
+        tasks = tasks.order_by("dueDate").order_by("-taskImportance")
         for i, task in enumerate(tasks):
             if task.dueDate is None:
                 continue
