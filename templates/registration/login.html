@@ -2,18 +2,18 @@
 
 {% block content %}
 <h1>Login</h1>
-<section class="common-form">
+<section>
     {% if form.errors %}
-    <p class="error-msg">Your username and password didn't match. Please try again.</p>
+    <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
 
     {% if next %}
-    {% if user.is_authenticated %}
-    <p class="error-msg">Your account doesn't have access to this page. To proceed,
+      {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
         please login with an account that has access.</p>
-    {% else %}
-    <p class="error-msg">Please login to see this page.</p>
-    {% endif %}
+      {% else %}
+      <p>Please login to see this page.</p>
+      {% endif %}
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">
