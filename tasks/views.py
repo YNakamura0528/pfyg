@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 
-
+@login_required
 def index(request, option = None):
 
     user_id = request.user.id
