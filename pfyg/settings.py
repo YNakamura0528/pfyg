@@ -132,5 +132,12 @@ except ImportError:
     pass
 
 if not DEBUG:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn="https://c2bf4b8812744b9e886f42ba65c74add@sentry.io/1372914",
+        integrations=[DjangoIntegration()]
+    )
+
     import django_heroku
     django_heroku.settings(locals())
