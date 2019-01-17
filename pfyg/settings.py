@@ -147,6 +147,8 @@ if not DEBUG:
         integrations=[DjangoIntegration()]
     )
 
+    import django_heroku
+    django_heroku.settings(locals())
 
     import dj_database_url
     DATABASES['default'] = dj_database_url.config()
@@ -155,5 +157,3 @@ if not DEBUG:
     ALLOWED_HOSTS = ['*']
 
     # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    import django_heroku
-    django_heroku.settings(locals())
