@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-LOGIN_REDIRECT_URL = "tasks/"
+LOGIN_REDIRECT_URL = "/tasks/"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'pfyg.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -116,6 +116,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+
+ALLOWED_HOSTS = ['*']
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -147,3 +151,7 @@ if not DEBUG:
 
     import django_heroku
     django_heroku.settings(locals())
+
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config()
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
