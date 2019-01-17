@@ -118,8 +118,6 @@ USE_TZ = True
 
 
 
-ALLOWED_HOSTS = ['*']
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -149,10 +147,13 @@ if not DEBUG:
         integrations=[DjangoIntegration()]
     )
 
-    import django_heroku
-    django_heroku.settings(locals())
 
     import dj_database_url
     DATABASES['default'] = dj_database_url.config()
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    ALLOWED_HOSTS = ['*']
+
+    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    import django_heroku
+    django_heroku.settings(locals())
