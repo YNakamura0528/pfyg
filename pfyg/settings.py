@@ -136,6 +136,8 @@ except ImportError:
     pass
 
 if not DEBUG:
+    # from django.contrib.staticfiles import storage
+    # storage.ManifestStaticFilesStorage.manifest_strict = False
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
     sentry_sdk.init(
