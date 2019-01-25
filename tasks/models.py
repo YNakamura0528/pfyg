@@ -37,7 +37,7 @@ class Task(models.Model):
 
     @classmethod
     def getTaskGraph(cls, tasks):
-        width = 1200
+        width = 800
         height = 400
         graph = Image.new("RGB", (width, height), (100,0,0))
         draw = ImageDraw.Draw(graph)
@@ -46,12 +46,17 @@ class Task(models.Model):
 
         # tasks = Task.objects.filter(completedDatetime__isnull=True).order_by("dueDate").order_by("-taskImportance")
         tasks = tasks.order_by("dueDate").order_by("-taskImportance")
+        # 下り順でソートして取得しているので、順番に上から並べれば重要度が高いものほど上に来る
         for i, task in enumerate(tasks):
             if task.dueDate is None:
                 continue
-            yoko = width - (task.dueDate - date.today()).days * font_size * 8 - 200
-            if yoko >= width - len(task.taskName) * font_size:
-                yoko = width - len(task.taskName) * font_size
+            messageLength = len(task.taskName.encode("shift-jis"))
+            yoko = width - (task.dueDate - date.today()).days * font_size * 3 # - font_size * messageLength / 2
+            # if yoko >= width - len(task.taskName) * font_size:
+            #     yoko = width - len(task.taskName) * font_size
+
+            if yoko >= width - messageLength * font_size / 2:
+                yoko = width - messageLength * font_size / 2
             if yoko < 10:
                 yoko = 10
 
